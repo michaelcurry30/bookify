@@ -1,4 +1,4 @@
-import Stripe from "stripe";
+﻿import Stripe from "stripe";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error("Missing STRIPE_SECRET_KEY in environment variables");
@@ -6,6 +6,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 
 // Single shared Stripe client for server-side use.
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2024-06-20",
+  apiVersion: "2026-06-24.dahlia",
   typescript: true,
 });
+
