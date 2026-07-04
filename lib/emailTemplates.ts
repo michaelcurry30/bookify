@@ -1,4 +1,4 @@
-﻿function baseTemplate(bodyHtml) {
+﻿function baseTemplate(bodyHtml: string) {
   return `
 <!DOCTYPE html>
 <html>
@@ -30,14 +30,14 @@
 </html>`;
 }
 
-function button(text, url) {
+function button(text: string, url: string) {
   return `
     <a href="${url}" style="display:inline-block;background:linear-gradient(135deg,#16a34a,#22c55e);color:#052e16;text-decoration:none;font-weight:700;font-size:15px;padding:14px 28px;border-radius:10px;margin-top:16px;">
       ${text}
     </a>`;
 }
 
-export function welcomeEmailHtml(businessName, dashboardUrl) {
+export function welcomeEmailHtml(businessName: string, dashboardUrl: string) {
   return baseTemplate(`
     <h1 style="font-size:22px;margin:0 0 12px;">Welcome to BookIfy AI, ${businessName}!</h1>
     <p>Your BookIfy AI is set up. Here is how to get your first lead captured in the next 15 minutes:</p>
@@ -53,7 +53,7 @@ export function welcomeEmailHtml(businessName, dashboardUrl) {
   `);
 }
 
-export function fourDaysLeftHtml(businessName, leadsCount, bookingsCount, upgradeUrl) {
+export function fourDaysLeftHtml(businessName: string, leadsCount: number, bookingsCount: number, upgradeUrl: string) {
   return baseTemplate(`
     <h1 style="font-size:22px;margin:0 0 12px;">${businessName}, you have 4 days left in your trial</h1>
     <p>Here is what you will lose if your trial ends without upgrading:</p>
@@ -67,7 +67,7 @@ export function fourDaysLeftHtml(businessName, leadsCount, bookingsCount, upgrad
   `);
 }
 
-export function lastDayHtml(businessName, leadsCount, bookingsCount, upgradeUrl) {
+export function lastDayHtml(businessName: string, leadsCount: number, bookingsCount: number, upgradeUrl: string) {
   return baseTemplate(`
     <h1 style="font-size:22px;margin:0 0 12px;">${businessName}, your trial ends tomorrow</h1>
     <p>Your <strong>${leadsCount} leads</strong> and <strong>${bookingsCount} bookings</strong> are at risk. Once your trial ends, you will lose access to all of it.</p>
@@ -76,7 +76,7 @@ export function lastDayHtml(businessName, leadsCount, bookingsCount, upgradeUrl)
   `);
 }
 
-export function trialEndedHtml(businessName, reactivateUrl) {
+export function trialEndedHtml(businessName: string, reactivateUrl: string) {
   return baseTemplate(`
     <h1 style="font-size:22px;margin:0 0 12px;">${businessName}, your free trial has ended</h1>
     <p>Your BookIfy AI has stopped responding to new leads. But do not worry - your data is still here.</p>
