@@ -182,7 +182,7 @@ Booking link: ${fix(formData.booking_link)}
     router.push("/pricing");
   }
 
-  const inputStyle: React.CSSProperties = { width:"100%", padding:"14px 16px", background:"rgba(240,253,244,0.05)", border:"1.5px solid rgba(74,222,128,0.18)", borderRadius:"11px", color:"#f0fdf4", fontSize:"15px", fontFamily:"inherit", outline:"none", boxSizing:"border-box" };
+  const inputStyle: React.CSSProperties = { width:"100%", padding:"14px 16px", background:"rgba(240,253,244,0.05)", border:"1.5px solid rgba(74,222,128,0.18)", borderRadius:"11px", color:"#f0fdf4", fontSize:"15px", fontFamily:"inherit", outline:"none", boxSizing:"border-box", colorScheme:"dark" };
   const textareaStyle: React.CSSProperties = { ...inputStyle, resize:"vertical", minHeight:"110px" };
   const smSelectStyle: React.CSSProperties = { ...inputStyle, padding:"8px 10px", fontSize:"13px", appearance:"none", cursor:"pointer" };
 
