@@ -132,6 +132,14 @@ export default function OnboardingPage() {
     setSaving(true);
     setError("");
     const { data: { user } } = await supabase.auth.getUser();
+
+if (!user) {
+  setSaving(false);
+  setError("Your session expired. Please log in again.");
+  router.push("/login");
+  return;
+}
+
     const fix = (url: string) => url ? (url.startsWith("http") ? url : `https://${url}`) : "";
     const finalHours = formData.hours || hoursToString();
 
