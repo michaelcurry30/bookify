@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
-
+import Link from "next/link";
 type Plan = "starter" | "growth" | null;
 
 interface Profile {
@@ -43,6 +43,14 @@ const ALL_TOOLS = [
   { id: "branding", name: "Custom Branding", desc: "White-label your booking page and messages.", minPlan: "growth" },
 ];
 
+const TOOL_ROUTES: Record<string, string> = {
+     "ai-inbox": "/dashboard/leads",
+     "calendar": "/dashboard/calendar",
+     "followups": "/dashboard/followups",
+     "multi-location": "/dashboard/multi-location",
+     "reporting": "/dashboard/roi",
+     "branding": "/dashboard/branding",
+   };
 function startOfToday() {
   const d = new Date();
   d.setHours(0, 0, 0, 0);
@@ -331,27 +339,36 @@ export default function DashboardPage() {
               gap: "16px",
             }}
           >
-            {availableTools.map((tool) => (
-              <div
-                key={tool.id}
-                style={{
-                  background: "rgba(240,253,244,0.03)",
-                  border: "1px solid rgba(74,222,128,0.15)",
-                  borderRadius: "16px",
-                  padding: "20px",
-                }}
-              >
-                <div style={{ fontWeight: 700, fontSize: "15px", marginBottom: "6px" }}>
-                  {tool.name}
-                </div>
-                <div style={{ fontSize: "13px", color: "rgba(240,253,244,0.5)" }}>
-                  {tool.desc}
-                </div>
-              </div>
-            ))}
+            {availableTools.map((tool) => {
+     const href = TOOL_ROUTES[tool.id];
+     return (
+       <Link
+         key={tool.id}
+         href={href}
+         style={{
+           background: "rgba(240,253,244,0.03)",
+           border: "1px solid rgba(74,222,128,0.15)",
+           borderRadius: "16px",
+           padding: "20px",
+           display: "block",
+           textDecoration: "none",
+           color: "inherit",
+           cursor: "pointer",
+         }}
+       >
+         <div style={{ fontWeight: 700, fontSize: "15px", marginBottom: "6px" }}>
+           {tool.name}
+         </div>
+         <div style={{ fontSize: "13px", color: "rgba(240,253,244,0.5)" }}>
+           {tool.desc}
+         </div>
+       </Link>
+     );
+   })}
           </div>
         </div>
       </div>
     </main>
   );
 }
+"use client";
