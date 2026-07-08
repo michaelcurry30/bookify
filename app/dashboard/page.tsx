@@ -371,4 +371,3 @@ export default function DashboardPage() {
     </main>
   );
 }
-"use client";
