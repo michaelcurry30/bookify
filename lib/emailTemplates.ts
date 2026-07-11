@@ -84,3 +84,13 @@ export function trialEndedHtml(businessName: string, reactivateUrl: string) {
     ${button("Reactivate My Account", reactivateUrl)}
   `);
 }
+
+export function leadResponseEmailHtml(businessName: string, aiResponse: string, bookingLink: string) {
+  return baseTemplate(`
+    <p style="margin:0 0 16px;">${aiResponse}</p>
+    ${bookingLink ? button("Book Your Appointment", bookingLink) : ""}
+    <p style="margin-top:24px;color:rgba(240,253,244,0.5);font-size:13px;">
+      - ${businessName}
+    </p>
+  `);
+}

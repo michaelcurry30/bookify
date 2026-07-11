@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
     const { data: profile, error: profileError } = await supabaseAdmin
       .from("profiles")
-      .select("business_name, service_type, ai_context, never_say")
+      .select("business_name, service_type, ai_context, never_say, booking_link")
       .eq("id", user_id)
       .single();
 
@@ -116,6 +116,37 @@ export async function POST(req: NextRequest) {
     if (convError) {
       console.error("Failed to save AI conversation:", convError);
     }
+
+    if (email) {
+  try {
+    const { sendEmail } = await import("@/lib/resendEmail");
+    const { leadResponseEmailHtml } = await import("@/lib/emailTemplates");
+    await sendEmail({
+      to: email,
+      subject: "Re: your message to " + (profile.business_name || "us"),
+      html: leadResponseEmailHtml(
+        profile.business_name || "the business",
+        aiResponseText,
+        profile.booking_link || ""
+      ),
+    });
+  } catch (emailErr) {
+    console.error("Failed to send lead response email:", emailErr);
+  }
+}
+
+if (phone) {
+  try {
+    const { sendSms } = await import("@/lib/twilioClient");
+    const bookingText = profile.booking_link ? "\n\nBook here: " + profile.booking_link : "";
+    await sendSms({
+      to: phone,
+      body: aiResponseText + bookingText,
+    });
+  } catch (smsErr) {
+    console.error("Failed to send lead response SMS:", smsErr);
+  }
+}
 
     return NextResponse.json({
       leadId: lead.id,
