@@ -48,7 +48,8 @@ export default function LeadsPage() {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [conversation, setConversation] = useState<ConversationMsg[]>([]);
   const [showBookedModal, setShowBookedModal] = useState(false);
-  const [jobValue, setJobValue] = useState("");
+const [jobValue, setJobValue] = useState("");
+const [appointmentTime, setAppointmentTime] = useState("");
   const [actionMsg, setActionMsg] = useState<string | null>(null);
 
   useEffect(() => {
@@ -110,24 +111,39 @@ export default function LeadsPage() {
   }
 
   async function confirmBooked() {
-    if (!selectedLead) return;
-    const value = parseFloat(jobValue);
-    if (isNaN(value) || value < 0) {
-      setActionMsg("Enter a valid job value.");
-      return;
-    }
-    const { error } = await supabase
-      .from("leads")
-      .update({ status: "booked", value })
-      .eq("id", selectedLead.id);
-    if (!error) {
-      setActionMsg("Marked as booked ($" + value.toLocaleString() + ").");
-      setSelectedLead({ ...selectedLead, status: "booked", value });
-      setShowBookedModal(false);
-      setJobValue("");
-      refreshLeads();
+  if (!selectedLead) return;
+  const value = parseFloat(jobValue);
+  if (isNaN(value) || value < 0) {
+    setActionMsg("Enter a valid job value.");
+    return;
+  }
+  if (!appointmentTime) {
+    setActionMsg("Select an appointment date and time.");
+    return;
+  }
+  const { error } = await supabase
+    .from("leads")
+    .update({ status: "booked", value, appointment_time: appointmentTime })
+    .eq("id", selectedLead.id);
+  if (!error) {
+    setActionMsg("Marked as booked ($" + value.toLocaleString() + ").");
+    setSelectedLead({ ...selectedLead, status: "booked", value });
+    setShowBookedModal(false);
+    setJobValue("");
+    setAppointmentTime("");
+    refreshLeads();
+
+    try {
+      await fetch("/api/send-calendar-invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId: selectedLead.id, appointmentTime }),
+      });
+    } catch (inviteErr) {
+      console.error("Failed to send calendar invite:", inviteErr);
     }
   }
+}
 
   async function sendFollowUp() {
     if (!selectedLead || !userId) return;
@@ -480,24 +496,44 @@ export default function LeadsPage() {
             <p style={{ fontSize: "13px", color: "rgba(240,253,244,0.5)", marginBottom: "16px" }}>
               What is the job value for this booking?
             </p>
-            <input
-              type="number"
-              autoFocus
-              placeholder="e.g. 1500"
-              value={jobValue}
-              onChange={(e) => setJobValue(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px 12px",
-                borderRadius: "10px",
-                border: "1.5px solid rgba(74,222,128,0.2)",
-                background: "rgba(240,253,244,0.05)",
-                color: "#f0fdf4",
-                fontSize: "14px",
-                marginBottom: "16px",
-                boxSizing: "border-box",
-              }}
-            />
+ <input
+  type="number"
+  autoFocus
+  placeholder="e.g. 1500"
+  value={jobValue}
+  onChange={(e) => setJobValue(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: "10px",
+    border: "1.5px solid rgba(74,222,128,0.2)",
+    background: "rgba(240,253,244,0.05)",
+    color: "#f0fdf4",
+    fontSize: "14px",
+    marginBottom: "16px",
+    boxSizing: "border-box",
+  }}
+/>
+<div style={{ fontSize: "13px", color: "rgba(240,253,244,0.5)", marginBottom: "6px" }}>
+  Appointment date & time
+</div>
+<input
+  type="datetime-local"
+  value={appointmentTime}
+  onChange={(e) => setAppointmentTime(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: "10px",
+    border: "1.5px solid rgba(74,222,128,0.2)",
+    background: "rgba(240,253,244,0.05)",
+    color: "#f0fdf4",
+    fontSize: "14px",
+    marginBottom: "16px",
+    boxSizing: "border-box",
+    colorScheme: "dark",
+  }}
+/>
             <div style={{ display: "flex", gap: "8px" }}>
               <button
                 onClick={() => setShowBookedModal(false)}
