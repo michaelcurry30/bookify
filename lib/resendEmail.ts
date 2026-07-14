@@ -1,10 +1,16 @@
-﻿interface SendEmailParams {
+﻿interface EmailAttachment {
+  filename: string;
+  content: string; // base64-encoded content
+}
+
+interface SendEmailParams {
   to: string;
   subject: string;
   html: string;
+  attachments?: EmailAttachment[];
 }
 
-export async function sendEmail({ to, subject, html }: SendEmailParams) {
+export async function sendEmail({ to, subject, html, attachments }: SendEmailParams) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -16,6 +22,7 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
       to,
       subject,
       html,
+      ...(attachments ? { attachments } : {}),
     }),
   });
 
